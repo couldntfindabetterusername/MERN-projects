@@ -19,7 +19,17 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
 import Input from "./Input";
 
+import { signin, signup } from "../../actions/auth";
+
 import { gapi } from "gapi-script";
+
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
   useEffect(() => {
@@ -35,6 +45,7 @@ const Auth = () => {
   }, []);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState(initialState);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -45,9 +56,20 @@ const Auth = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const handleChange = () => {};
+    if (isSignup) {
+      dispatch(signup(formData, navigate));
+    } else {
+      dispatch(signin(formData, navigate));
+    }
+    console.log(formData);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const switchMode = () => {
     setIsSignup(!isSignup);
