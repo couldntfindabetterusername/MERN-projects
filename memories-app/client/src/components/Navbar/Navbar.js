@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@material-ui/core";
 import useStyles from "./styles";
@@ -12,12 +12,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const logout = () => {
+  const logout = useCallback(() => {
     dispatch({ type: "LOGOUT" });
     navigate("/");
 
     setUser(null);
-  };
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     const token = user?.token;
@@ -28,7 +28,8 @@ const Navbar = () => {
       if (decodedToken.exp * 1000 < new Date().getTime()) logout();
     }
     setUser(JSON.parse(localStorage.getItem("profile")));
-  }, [location]);
+  }, [location, logout, user]);
+
   const classes = useStyles();
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
